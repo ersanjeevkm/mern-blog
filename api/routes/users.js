@@ -2,11 +2,12 @@ const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
+const verify = require("../middleware/verify");
 
 //UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/", verify, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     if (user) {
       if (req.body.password) {
         const salt = await bcrypt.genSalt(10);
@@ -15,7 +16,7 @@ router.put("/:id", async (req, res) => {
 
       try {
         const updatedUser = await User.findByIdAndUpdate(
-          req.params.id,
+          req.user._id,
           {
             $set: req.body,
           },
@@ -34,13 +35,13 @@ router.put("/:id", async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", async (req, res) => {
+router.delete("/", verify, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     if (user) {
       try {
         await Post.deleteMany({ userId: user._id });
-        await User.findByIdAndDelete(req.params.id);
+        await User.findByIdAndDelete(req.user._id);
         res.status(200).json("User has been deleted...");
       } catch (err) {
         res.status(500).json(err);
@@ -53,10 +54,10 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-//GET USER POST
-router.get("/:id", async (req, res) => {
+//GET USER
+router.get("/", verify, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user.id);
     const { _id, password, ...others } = user._doc;
     res.status(200).json(others);
   } catch (err) {

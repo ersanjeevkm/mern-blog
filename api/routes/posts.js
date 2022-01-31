@@ -1,11 +1,12 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
-const mongoose = require("mongoose");
+const verify = require("../middleware/verify");
 
 //CREATE
-router.post("/", async (req, res) => {
-  const newPost = new Post(req.body);
+router.post("/", verify, async (req, res) => {
+  const postData = { ...req.body, userId: req.user._id };
+  const newPost = new Post(postData);
   try {
     const savedPost = await newPost.save();
     res.status(200).json(savedPost);
@@ -15,17 +16,16 @@ router.post("/", async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/:id", verify, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post) {
-      if (post.userId.toString() === req.body.userId) {
+      if (post.userId.toString() === req.user._id) {
         try {
-          const { userId, ...others } = req.body;
           const updatedPost = await Post.findByIdAndUpdate(
             req.params.id,
             {
-              $set: others,
+              $set: req.body,
             },
             { new: true }
           );
@@ -45,11 +45,11 @@ router.put("/:id", async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verify, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post) {
-      if (post.userId.toString() === req.body.userId) {
+      if (post.userId.toString() === req.user._id) {
         try {
           await post.delete();
           res.status(200).json("Post has been deleted!");
