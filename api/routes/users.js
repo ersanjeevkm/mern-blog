@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
 const verify = require("../middleware/verify");
+const { auth, moveFile } = require("../middleware/drive");
 
 //UPDATE
 router.put("/", verify, async (req, res) => {
@@ -41,7 +42,9 @@ router.delete("/", verify, async (req, res) => {
     if (user) {
       try {
         await Post.deleteMany({ userId: user._id });
-        await User.findByIdAndDelete(req.user._id);
+        const picId = "1eK3_hcOlpL1Pu28sOxDtl73vZs3DN82J";
+        await moveFile(picId, auth);
+        await user.delete();
         res.status(200).json("User has been deleted...");
       } catch (err) {
         res.status(500).json(err);

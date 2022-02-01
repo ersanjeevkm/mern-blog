@@ -6,7 +6,8 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
 const categoryRoute = require("./routes/categories");
-const multer = require("multer");
+const multerUpload = require("./middleware/multer");
+const { createAndUploadFile, auth } = require("./middleware/drive");
 
 dotenv.config();
 app.use(express.json());
@@ -16,18 +17,9 @@ mongoose
   .then(console.log("Connected to DB"))
   .catch((err) => console.log(err));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.name);
-  },
-});
-
-const upload = multer({ storage: storage });
-
-app.post("/api/upload", upload.single("file"), (req, res) => {
+app.post("/api/upload", multerUpload().single("file"), async (req, res) => {
+  await createAndUploadFile(req, auth);
+  console.log("File uploaded to drive. File Id >>> " + req.fileId);
   res.status(200).json("File has been uploaded");
 });
 
