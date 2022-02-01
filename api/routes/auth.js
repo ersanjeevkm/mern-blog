@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
         res.status(400).json("Wrong credentials!");
       } else {
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
-          expiresIn: "2d",
+          expiresIn: process.env.TOKEN_EXP,
         });
 
         const { password, ...others } = user._doc;

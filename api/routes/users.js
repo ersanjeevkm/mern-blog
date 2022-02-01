@@ -42,7 +42,7 @@ router.delete("/", verify, async (req, res) => {
     if (user) {
       try {
         await Post.deleteMany({ userId: user._id });
-        const picId = "1eK3_hcOlpL1Pu28sOxDtl73vZs3DN82J";
+        const picId = user.profilePic;
         await moveFile(picId, auth);
         await user.delete();
         res.status(200).json("User has been deleted...");

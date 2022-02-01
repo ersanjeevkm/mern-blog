@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
 const verify = require("../middleware/verify");
+const { auth, moveFile } = require("../middleware/drive");
 
 //CREATE
 router.post("/", verify, async (req, res) => {
@@ -51,6 +52,8 @@ router.delete("/:id", verify, async (req, res) => {
     if (post) {
       if (post.userId.toString() === req.user._id) {
         try {
+          const picId = post.photo;
+          await moveFile(picId, auth);
           await post.delete();
           res.status(200).json("Post has been deleted!");
         } catch (err) {
@@ -88,7 +91,7 @@ router.get("/", async (req, res) => {
   try {
     let posts;
     if (userName) {
-      user = await User.findOne({ username: userName });
+      const user = await User.findOne({ username: userName });
       posts = await Post.find({ userId: user._id });
     } else if (catName) {
       posts = await Post.find({
