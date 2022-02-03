@@ -1,23 +1,28 @@
 import "./Post.css";
+import { Link } from "react-router-dom";
 
-export default function Post() {
+export default function Post({ post }) {
+  const photoUrl = "https://drive.google.com/uc?id=" + post.photo;
+
   return (
     <div className="post">
-      <img
-        src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-        alt=""
-        className="postImg"
-      />
+      <img src={photoUrl} alt="" className="postImg" />
 
       <div className="postInfo">
         <div className="postCats">
-          <span className="postCat">Music</span>
-          <span className="postCat">Sports</span>
+          {post.categories.map((cat) => (
+            <span className="postCat">{cat.name}</span>
+          ))}
         </div>
-        <span className="postTitle">lorem ipsum dolor sit</span>
+        <Link className="link" to={`/post/${post._id}`}>
+          <span className="postTitle">{post.title}</span>
+        </Link>
         <hr />
-        <span className="postDate">1 hour ago</span>
+        <span className="postDate">
+          {new Date(post.createdAt).toDateString()}
+        </span>
       </div>
+      <p className="postDesc">{post.desc}</p>
     </div>
   );
 }

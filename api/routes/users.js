@@ -60,8 +60,8 @@ router.delete("/", verify, async (req, res) => {
 //GET USER
 router.get("/", verify, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    const { _id, password, ...others } = user._doc;
+    const user = await User.findById(req.user._id);
+    const { password, ...others } = user._doc;
     res.status(200).json(others);
   } catch (err) {
     res.status(500).json(err);

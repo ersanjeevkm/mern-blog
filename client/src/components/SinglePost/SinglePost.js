@@ -1,44 +1,58 @@
+import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import axios from "axios";
 import "./SinglePost.css";
 
 export default function SinglePost() {
-  return (
-    <div className="singlePost">
-      <div className="singlePostWrapper">
-        <img
-          src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-          alt=""
-          className="singlePostImg"
-        />
-        <h1 className="singlePostTitle">
-          Lorem ipsum dolor sit am{" "}
-          <div className="singlePostEdit">
-            <i className="singlePostIcon far fa-edit"></i>
-            <i className="singlePostIcon far fa-trash-alt"></i>
-          </div>
-        </h1>
+  const location = useLocation();
+  const postId = location.pathname.split("/")[2];
+  const [post, setPost] = useState({});
 
-        <div className="singlePostInfo">
-          <span className="singlePostAuthor">
-            Author: <b>Sanjeev K M</b>
-          </span>
-          <span className="singlePostDate">1 hr ago</span>
+  useEffect(() => {
+    const getPost = async () => {
+      const res = await axios.get("/post/" + postId);
+      setPost(res.data);
+    };
+    getPost();
+  }, [postId]);
+
+  return (
+    <>
+      {Object.keys(post).length ? (
+        <div className="singlePost">
+          <div className="singlePostWrapper">
+            {post.photo && (
+              <img src={post.photo} alt="" className="singlePostImg" />
+            )}
+            <h1 className="singlePostTitle">
+              {post.title}
+              <div className="singlePostEdit">
+                <i className="singlePostIcon far fa-edit"></i>
+                <i className="singlePostIcon far fa-trash-alt"></i>
+              </div>
+            </h1>
+
+            <div className="singlePostInfo">
+              <span className="singlePostAuthor">
+                Author:
+                <Link to={`/?user=${post.userId.username}`} className="link">
+                  <b>{post.userId.username}</b>
+                </Link>
+              </span>
+              <span className="singlePostDate">
+                {new Date(post.createdAt).toDateString()}
+              </span>
+            </div>
+            <p>{post.desc}</p>
+          </div>
         </div>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias eaque
-          odio minus, non ex praesentium quia, ullam perspiciatis tempora iusto
-          minima laborum corrupti fuga atque assumenda aliquam consectetur. Cum,
-          officia. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad
-          minus dicta, recusandae laborum nemo placeat distinctio natus at
-          eveniet praesentium. Quam itaque est atque officiis doloribus magnam
-          soluta, labore perferendis. Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Illo veritatis voluptatibus perferendis laudantium
-          qui doloribus, sit, ipsam nemo quaerat facilis odit in doloremque ea
-          tenetur fuga, eligendi maiores ex. Iste! Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Sint assumenda eum veniam quod fugit?
-          Nihil harum magni id, soluta ipsa repudiandae fuga eaque. Ipsam,
-          consectetur cupiditate tempora sed fugit voluptas.
-        </p>
-      </div>
-    </div>
+      ) : (
+        <div className="singlePost">
+          <div className="singlePostWrapper">
+            <h1 className="singlePostTitle">Sorry post not found</h1>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

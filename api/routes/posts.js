@@ -6,11 +6,20 @@ const { auth, moveFile } = require("../middleware/drive");
 
 //CREATE
 router.post("/", verify, async (req, res) => {
-  const postData = { ...req.body, userId: req.user._id };
-  const newPost = new Post(postData);
   try {
-    const savedPost = await newPost.save();
-    res.status(200).json(savedPost);
+    const user = await User.findById(req.user._id);
+    if (user) {
+      const postData = { ...req.body, userId: req.user._id };
+      const newPost = new Post(postData);
+      try {
+        const savedPost = await newPost.save();
+        res.status(200).json(savedPost);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(404).json("User not found!");
+    }
   } catch (err) {
     res.status(500).json(err);
   }
@@ -92,13 +101,16 @@ router.get("/", async (req, res) => {
     let posts;
     if (userName) {
       const user = await User.findOne({ username: userName });
-      posts = await Post.find({ userId: user._id });
+      posts = await Post.find({ userId: user._id }).populate(
+        "userId",
+        "username _id"
+      );
     } else if (catName) {
       posts = await Post.find({
         categories: {
           $in: [catName],
         },
-      });
+      }).populate("userId", "username _id");
     } else {
       posts = await Post.find();
     }

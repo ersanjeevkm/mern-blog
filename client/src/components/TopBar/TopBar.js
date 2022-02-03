@@ -1,8 +1,16 @@
+import { Logout } from "../../context/Actions";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import "./TopBar.css";
+import { Context } from "../../context/Context";
 
 function TopBar() {
-  const user = false;
+  const { user, dispatch } = useContext(Context);
+
+  const handleLogout = () => {
+    dispatch(Logout());
+  };
+
   return (
     <div className="top">
       <div className="topLeft">
@@ -33,16 +41,14 @@ function TopBar() {
               WRITE
             </Link>
           </li>
-          <li className="topListItem">{user && "LOGOUT"}</li>
+          <li className="topListItem" onClick={handleLogout}>
+            {user && "LOGOUT"}
+          </li>
         </ul>
       </div>
       <div className="topRight">
         {user ? (
-          <img
-            className="topImg"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfPfW_5lziQSBfJY73Tbp2dFfG1MhxzELpdw&usqp=CAU"
-            alt=""
-          />
+          <img className="topImg" src={user.profilePic} alt="" />
         ) : (
           <ul className="topList">
             <li className="topListItem">

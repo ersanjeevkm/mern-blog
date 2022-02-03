@@ -39,7 +39,7 @@ router.post("/login", async (req, res) => {
         });
 
         const { password, ...others } = user._doc;
-        res.setHeader("auth-token", token);
+        res.setHeader("auth_token", token);
         res.status(200).json(others);
       }
     }
