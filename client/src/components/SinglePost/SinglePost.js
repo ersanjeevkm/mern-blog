@@ -8,6 +8,8 @@ export default function SinglePost() {
   const postId = location.pathname.split("/")[2];
   const [post, setPost] = useState({});
 
+  const photoUrl = "https://drive.google.com/uc?id=" + post.photo;
+
   useEffect(() => {
     const getPost = async () => {
       const res = await axios.get("/post/" + postId);
@@ -21,9 +23,7 @@ export default function SinglePost() {
       {Object.keys(post).length ? (
         <div className="singlePost">
           <div className="singlePostWrapper">
-            {post.photo && (
-              <img src={post.photo} alt="" className="singlePostImg" />
-            )}
+            <img src={photoUrl} alt="" className="singlePostImg" />
             <h1 className="singlePostTitle">
               {post.title}
               <div className="singlePostEdit">

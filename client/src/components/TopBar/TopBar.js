@@ -6,6 +6,7 @@ import { Context } from "../../context/Context";
 
 function TopBar() {
   const { user, dispatch } = useContext(Context);
+  const photoUrl = "https://drive.google.com/uc?id=" + user?.profilePic;
 
   const handleLogout = () => {
     dispatch(Logout());
@@ -48,7 +49,7 @@ function TopBar() {
       </div>
       <div className="topRight">
         {user ? (
-          <img className="topImg" src={user.profilePic} alt="" />
+          <img className="topImg" src={photoUrl} alt="" />
         ) : (
           <ul className="topList">
             <li className="topListItem">

@@ -14,8 +14,7 @@ const PostSchema = new mongoose.Schema(
     photo: {
       type: String,
       required: true,
-      default:
-        "https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+      default: "1iqa2R8sVzjP8qBDEgRBIqHkg_K1HVM3y",
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
