@@ -12,7 +12,7 @@ const createAndUploadFile = (req, auth) => {
   const driveService = google.drive({ version: "v3", auth });
 
   const fileMetaData = {
-    name: "fulename.jpeg",
+    name: req.body.name,
     parents: ["1Xmd3gl-vI18dQJc-Jgx3rZX4feUHVCr2"],
   };
 

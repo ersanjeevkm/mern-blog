@@ -14,7 +14,11 @@ router.put("/", verify, async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(req.body.password, salt);
       }
-
+      if (req.body.profilePic) {
+        const picId = user.profilePic;
+        if (picId !== "1szK_knLR19gKH0uyrkS_l2dim_XaK368")
+          await moveFile(picId, auth);
+      }
       try {
         const updatedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -23,7 +27,8 @@ router.put("/", verify, async (req, res) => {
           },
           { new: true }
         );
-        res.status(200).json(updatedUser);
+        const { password, ...others } = updatedUser._doc;
+        res.status(200).json(others);
       } catch (err) {
         res.status(500).json(err);
       }
@@ -41,9 +46,20 @@ router.delete("/", verify, async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
       try {
-        await Post.deleteMany({ userId: user._id });
+        const posts = await Post.find({ userId: user._id });
+        await Promise.all(
+          posts.map(async (post) => {
+            const picId = post.photo;
+            if (picId !== "1iqa2R8sVzjP8qBDEgRBIqHkg_K1HVM3y")
+              await moveFile(picId, auth);
+            await post.delete();
+          })
+        );
+
         const picId = user.profilePic;
-        await moveFile(picId, auth);
+        if (picId !== "1szK_knLR19gKH0uyrkS_l2dim_XaK368")
+          await moveFile(picId, auth);
+
         await user.delete();
         res.status(200).json("User has been deleted...");
       } catch (err) {

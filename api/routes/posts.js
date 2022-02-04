@@ -62,7 +62,8 @@ router.delete("/:id", verify, async (req, res) => {
       if (post.userId.toString() === req.user._id) {
         try {
           const picId = post.photo;
-          await moveFile(picId, auth);
+          if (picId !== "1iqa2R8sVzjP8qBDEgRBIqHkg_K1HVM3y")
+            await moveFile(picId, auth);
           await post.delete();
           res.status(200).json("Post has been deleted!");
         } catch (err) {

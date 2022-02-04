@@ -57,8 +57,8 @@ export default function Write() {
         .catch((err) => {
           if (err.response) {
             if (err.response.status === 400 || err.response.status === 401) {
-              //dispatch(Logout());
-              //navigate("/login", { replace: true });
+              dispatch(Logout());
+              navigate("/login", { replace: true });
             } else {
               setError(true);
               setDisable(false);

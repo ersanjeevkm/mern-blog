@@ -2,11 +2,16 @@ import "./Post.css";
 import { Link } from "react-router-dom";
 
 export default function Post({ post }) {
-  const photoUrl = "https://drive.google.com/uc?id=" + post.photo;
+  const photoUrl = `https://lh3.googleusercontent.com/d/${post.photo}=s400`;
 
   return (
     <div className="post">
-      <img src={photoUrl} alt="" className="postImg" />
+      <img
+        src={photoUrl}
+        alt=""
+        className="postImg"
+        referrerPolicy="no-referrer"
+      />
 
       <div className="postInfo">
         <div className="postCats">

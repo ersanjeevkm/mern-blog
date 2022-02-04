@@ -96,6 +96,11 @@
   justify-content: center;
 }
 
+.settingsSubmitButton:disabled {
+  cursor: not-allowed;
+  background-color: lightcoral;
+}
+
 .settingsSubmitButton:hover {
   background-color: rgb(1, 114, 114);
 }
